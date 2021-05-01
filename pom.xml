@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.miaoshaproject</groupId>
+  <artifactId>miaosha</artifactId>
+  <version>1.0-SNAPSHOT</version>
+
+  <name>miaosha</name>
+  <!-- FIXME change it to the project's website -->
+  <url>http://www.example.com</url>
+
+  <parent><!--指明父pom-->
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.0.5.RELEASE</version>
+  </parent>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.7</maven.compiler.source>
+    <maven.compiler.target>1.7</maven.compiler.target>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    <dependency>
+      <!--mysql的JDBC依赖（mysql的java client端）-->
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>8.0.11</version>
+      <scope>compile</scope>
+    </dependency>
+    <!--采用什么样的连接池，去管理MySQL连接——>Alibaba druid-->
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>druid</artifactId>
+      <version>1.1.3</version>
+    </dependency>
+    <!--下载springboot对mybatis的支持-->
+    <dependency>
+      <groupId>org.mybatis.spring.boot</groupId>
+      <artifactId>mybatis-spring-boot-starter</artifactId>
+      <version>1.3.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mybatis.generator</groupId>
+      <artifactId>mybatis-generator-core</artifactId>
+      <version>1.3.5</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
+      <plugins>
+        <!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
+        <plugin>
+          <artifactId>maven-clean-plugin</artifactId>
+          <version>3.1.0</version>
+        </plugin>
+        <!-- default lifecycle, jar packaging: see https://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_jar_packaging -->
+        <plugin>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>3.0.2</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.8.0</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.22.1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>3.0.2</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>2.5.2</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>2.8.2</version>
+        </plugin>
+        <!-- site lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#site_Lifecycle -->
+        <plugin>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>3.7.1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-project-info-reports-plugin</artifactId>
+          <version>3.0.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.mybatis.generator</groupId>
+          <artifactId>mybatis-generator-maven-plugin</artifactId>
+          <version>1.3.5</version>
+          <!--要生成对应的maven plugin，需要配置一些dependency-->
+          <dependencies>
+            <dependency>
+              <groupId>org.mybatis.generator</groupId>
+              <artifactId>mybatis-generator-core</artifactId>
+              <version>1.3.5</version>
+            </dependency>
+            <!--对我们使用的mysql的数据库，实现解析-->
+            <dependency>
+              <groupId>mysql</groupId>
+              <artifactId>mysql-connector-java</artifactId>
+              <version>8.0.11</version>
+            </dependency>
+          </dependencies>
+          <executions>
+            <execution>
+              <id>mybatis generator</id>
+              <!--phase阶段是在package阶段-->
+              <phase>package</phase>
+              <!--目的goal是generate-->
+              <goals>
+                <goal>generate</goal>
+              </goals>
+            </execution>
+          </executions>
+          <!--【考虑到项目中可能反复生成，还需要加几行配置】-->
+          <configuration>
+            <!--verbose==true表示：允许移动生成的文件（默认是false）-->
+            <verbose>true</verbose>
+            <!--overwrite==true表示：允许自动覆盖【只是方便演示！工作中不能开启！会覆盖别人的工作】-->
+            <overwrite>false</overwrite>
+            <!--【configurationFile：mybatis generator的配置文件的路径！】-->
+            <configurationFile>
+              src/main/resources/mybatis-generator.xml
+            </configurationFile>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+</project>
