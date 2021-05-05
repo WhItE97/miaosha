@@ -1,0 +1,117 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <!--引入bootstrap美化-->
+    <link href="static/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    <link href="static/assets/global/css/components.css" rel="stylesheet" type="text/css"/>
+    <link href="static/assets/admin/pages/css/login.css" type="text/javascript"/>
+    <!--导入jquery-->
+    <script src="static/assets/global/plugins/jquery-1.11.0.min.js" type="text/javascript"></script>
+</head>
+<body class="login">
+    <div class="content">
+        <h3 class="form-title">创建商品</h3>
+        <div class="form-group">
+            <label class="control-label">商品名</label>
+            <div>
+                <input class="form-control" type="text" name="title" id="title"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label">商品描述</label>
+            <div>
+                <input class="form-control" type="text" name="description" id="description"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label">价格</label>
+            <div>
+                <input class="form-control" type="text" name="price" id="price"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label">图片</label>
+            <div>
+                <input class="form-control" type="text" name="imgUrl" id="imgUrl"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label">库存</label>
+            <div>
+                <input class="form-control" type="text" name="stock" id="stock"/>
+            </div>
+        </div>
+        <div class="form-actions">
+            <button class="btn blue" id="create" type="submit">
+                提交商品创建
+            </button>
+        </div>
+    </div>
+</body>
+
+<script>
+    <!--所有的jQuery的动态绑定元素，必须在jQuery(document).ready()中完成；即：只有页面渲染结束之后才能执行！-->
+    jQuery(document).ready(function (){
+        //绑定otp的click事件，用于向后端发送获取手机验证码的请求
+        $("#create").on("click",function (){
+            //判空处理
+            var title = $("#title").val();
+            var description = $("#description").val();
+            var imgUrl = $("#imgUrl").val();
+            var price = $("#price").val();
+            var stock = $("#stock").val();
+
+            if(title==null||title==""){
+                alert("商品名不能为空！");
+                return false;
+            }
+            if(description==null||description ==""){
+                alert("商品描述不能为空！");
+                return false;
+            }
+            if(imgUrl==null||imgUrl==""){
+                alert("商品图片不能为空！");
+                return false;
+            }
+            if(price==null||price==""){
+                alert("商品价格不能为空！");
+                return false;
+            }
+            if(stock==null||stock==""){
+                alert("商品库存不能为空！");
+                return false;
+            }
+            $.ajax({
+                type:"POST",
+                contentType:"application/x-www-form-urlencoded",
+                url:"http://localhost:8080/item/create",
+                //传参
+                data:{
+                    "title":title,
+                    "description":description,
+                    "imgUrl":imgUrl,
+                    "price":price,
+                    "stock":stock
+                },
+                xhrFields:{withCredentials:true},
+                success:function (data){
+                    if(data.status=="success"){
+                        alert("创建成功！");
+                    }
+                    else{
+                        alert("创建失败，原因为"+data.data.errMsg);
+                    }
+                },
+                //这个只是ajax自己的error，我们的容器也可能捕获后端业务逻辑的错误，所以success中也要根据data.status来判断
+                error:function (data){
+                    alert("创建失败，原因为"+data.responseText);
+                }
+            });
+            //因为对应button是submit类型，点击会有默认行为：把submit button对应的form post出去
+            //所以如果不return false;按照JS的冒泡事件传递思想，会传到上一层;即form post的处理流里去
+            //所以这里捕获住onclick事件，不让他传递到上一层
+            return false;
+        });
+    });
+</script>
+</html>

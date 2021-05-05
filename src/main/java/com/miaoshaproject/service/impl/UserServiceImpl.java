@@ -8,6 +8,8 @@ import com.miaoshaproject.error.BusinessException;
 import com.miaoshaproject.error.EmBusinessError;
 import com.miaoshaproject.service.UserService;
 import com.miaoshaproject.service.model.UserModel;
+import com.miaoshaproject.validator.ValidationResult;
+import com.miaoshaproject.validator.ValidatorImpl;
 import org.apache.catalina.User;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -24,6 +26,10 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserPasswordDOMapper userPasswordDOMapper;
+
+
+    @Autowired
+    private ValidatorImpl validator;
 
     @Override
     public UserModel getUserById(Integer id) {
@@ -48,12 +54,17 @@ public class UserServiceImpl implements UserService {
             throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR);
         }
         //开始校验
-        if(StringUtils.isEmpty(userModel.getName())
-        ||userModel.getGender()==null
-        ||userModel.getAge()==null
-        ||StringUtils.isEmpty(userModel.getTelphone())){
-            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR);
+//        if(StringUtils.isEmpty(userModel.getName())
+//        ||userModel.getGender()==null
+//        ||userModel.getAge()==null
+//        ||StringUtils.isEmpty(userModel.getTelphone())){
+//            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR);
+//        }
+        ValidationResult result = validator.validate(userModel);
+        if(result.isHasErrors()){
+            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR,result.getErrMsg());
         }
+
         //如果通过检验，则需要把对应用户信息注册进数据库
         //把Model转换为Data Object，以便写入数据库
         //1.实现一个UserModel转UserDO的方法,因为dao【data object access】对象访问层认得是Data Object
