@@ -5,6 +5,8 @@ import com.miaoshaproject.error.BusinessException;
 import com.miaoshaproject.response.CommonReturnType;
 import com.miaoshaproject.service.ItemService;
 import com.miaoshaproject.service.model.ItemModel;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -49,8 +51,23 @@ public class ItemController extends BaseController{
     }
 
     private ItemVO convertVOFromModel(ItemModel itemModel){
+        if(itemModel==null){
+            return null;
+        }
         ItemVO itemVO = new ItemVO();
         BeanUtils.copyProperties(itemModel,itemVO);
+        //检查有无秒杀活动
+        if(itemModel.getPromoModel()!=null){
+            //有秒杀活动
+            itemVO.setPromoStatus(itemModel.getPromoModel().getStatus());
+            itemVO.setPromoId(itemModel.getPromoModel().getId());
+            itemVO.setStartTime(itemModel.getPromoModel().getStartTime().toString(DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")));
+            itemVO.setPromoPrice(itemModel.getPromoModel().getPromoItemPrice());
+        }
+        else{
+            //无秒杀活动【这里和视频的不一致，他是012 我是123】
+            itemVO.setPromoStatus(3);
+        }
         return itemVO;
     }
 

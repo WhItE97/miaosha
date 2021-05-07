@@ -1,6 +1,7 @@
 package com.miaoshaproject.dao;
 
 import com.miaoshaproject.dataobject.ItemStockDO;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -54,4 +55,7 @@ public interface ItemStockDOMapper {
      * @mbg.generated Tue May 04 22:33:30 CST 2021
      */
     int updateByPrimaryKey(ItemStockDO record);
+
+    //Param用来告诉mybatis来取的参数哪个是哪个
+    int decreaseStock(@Param("itemId") Integer itemId,@Param("amount") Integer amount);
 }

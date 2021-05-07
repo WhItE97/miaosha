@@ -1,5 +1,7 @@
 package com.miaoshaproject.controller.viewobject;
 
+import org.joda.time.DateTime;
+
 import java.math.BigDecimal;
 
 public class ItemVO {
@@ -16,6 +18,48 @@ public class ItemVO {
     private Integer sales;
     //商品图片url
     private String imgUrl;
+
+    //【新增秒杀模块后】
+    //记录商品秒杀活动的状态;1表示还未开始，2表示进行中，3表示已结束
+    private Integer promoStatus;
+    //秒杀活动价格
+    private BigDecimal promoPrice;
+    //秒杀活动id
+    private Integer promoId;
+    //秒杀活动开始时间;用于后续页面倒计时的实现
+    private String startTime;
+
+    public Integer getPromoStatus() {
+        return promoStatus;
+    }
+
+    public void setPromoStatus(Integer promoStatus) {
+        this.promoStatus = promoStatus;
+    }
+
+    public BigDecimal getPromoPrice() {
+        return promoPrice;
+    }
+
+    public void setPromoPrice(BigDecimal promoPrice) {
+        this.promoPrice = promoPrice;
+    }
+
+    public Integer getPromoId() {
+        return promoId;
+    }
+
+    public void setPromoId(Integer promoId) {
+        this.promoId = promoId;
+    }
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
 
     public Integer getId() {
         return id;

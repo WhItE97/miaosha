@@ -26,6 +26,18 @@ public class ItemModel {
     @NotBlank(message = "商品图片不能为空")
     private String imgUrl;
 
+    //使用【聚合模型（ItemModel中嵌套PromoModel）】来存放商品对应的秒杀活动信息
+    //if promoModel！=null——>该商品还有【未结束（即将开始or正在进行）】的秒杀活动
+    private PromoModel promoModel;
+
+    public PromoModel getPromoModel() {
+        return promoModel;
+    }
+
+    public void setPromoModel(PromoModel promoModel) {
+        this.promoModel = promoModel;
+    }
+
     public Integer getId() {
         return id;
     }

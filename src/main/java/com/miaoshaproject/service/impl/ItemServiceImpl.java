@@ -7,7 +7,9 @@ import com.miaoshaproject.dataobject.ItemStockDO;
 import com.miaoshaproject.error.BusinessException;
 import com.miaoshaproject.error.EmBusinessError;
 import com.miaoshaproject.service.ItemService;
+import com.miaoshaproject.service.PromoService;
 import com.miaoshaproject.service.model.ItemModel;
+import com.miaoshaproject.service.model.PromoModel;
 import com.miaoshaproject.validator.ValidationResult;
 import com.miaoshaproject.validator.ValidatorImpl;
 import org.springframework.beans.BeanUtils;
@@ -30,6 +32,9 @@ public class ItemServiceImpl implements ItemService {
 
     @Autowired
     private ItemStockDOMapper itemStockDOMapper;
+
+    @Autowired
+    private PromoService promoService;
 
     @Override
     @Transactional
@@ -101,7 +106,33 @@ public class ItemServiceImpl implements ItemService {
         ItemStockDO itemStockDO = itemStockDOMapper.selectByItemId(itemDO.getId());
 
         //将data object聚合、转换成——>model（以供前端转VO使用）
-        return convertModelFromDataObject(itemDO,itemStockDO);
+        ItemModel itemModel = convertModelFromDataObject(itemDO,itemStockDO);
+
+        //【增加秒杀模块后】还需要获取活动信息！（查询当前商品是否存在秒杀活动）
+        PromoModel promoModel = promoService.getPromoByItemId(itemModel.getId());
+        if(promoModel!=null&&promoModel.getStatus()!=3){//无活动or活动已经结束则不用管
+            itemModel.setPromoModel(promoModel);
+        }
+        return itemModel;
+    }
+
+    @Override
+    @Transactional
+    //实现 落单减库存
+    public boolean decreaseStock(Integer itemId, Integer amount) throws BusinessException {
+        int affectedRows = itemStockDOMapper.decreaseStock(itemId,amount);
+        if(affectedRows==0){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+
+    @Override
+    @Transactional
+    public void increaseSales(Integer itemId, Integer amount) throws BusinessException {
+        itemDOMapper.increaseSales(itemId,amount);
     }
 
     private ItemModel convertModelFromDataObject(ItemDO itemDO,ItemStockDO itemStockDO){

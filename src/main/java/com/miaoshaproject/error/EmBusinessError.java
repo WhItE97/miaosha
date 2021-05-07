@@ -8,9 +8,13 @@ public enum EmBusinessError implements CommonError{
     PARAMETER_VALIDATION_ERROR(10001,"参数不合法"),//这个只是default通用，它可以在下面的setErrMsg中通过定制化，进行改动
     UNKNOWN_ERROR(10002,"未知错误"),
 
-    //10000开头：用户信息相关错误定义
+    //20000开头：用户信息相关错误定义
     USER_NOT_EXIST(20001,"用户不存在"),
-    USER_LOGIN_FAILT(20002,"用户手机号或密码不存在")
+    USER_LOGIN_FAILT(20002,"用户手机号或密码不存在"),
+    USER_NOT_LOGIN(20003,"用户尚未登录"),
+
+    //30000开头：交易信息错误
+    STOCK_NOT_ENOUGH(30001,"库存不足"),
     ;
 
     private int errCode;

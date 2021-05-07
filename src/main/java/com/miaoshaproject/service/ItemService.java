@@ -12,4 +12,10 @@ public interface ItemService {
     List<ItemModel> listItem();
     //商品详情浏览
     ItemModel getItemById(Integer id);
+
+    //用于order的落单减库存的 库存扣减
+    boolean decreaseStock(Integer itemId,Integer amount) throws BusinessException;
+
+    //下单成功后增加商品销量
+    void increaseSales(Integer itemId,Integer amount) throws BusinessException;
 }
